@@ -1,0 +1,27 @@
+name: markdownx
+description: >-
+  Extended markdown parser with custom syntax for equations, simulations, 
+  and LaTeX math. Pure Dart, no Flutter dependency.
+version: 1.0.0
+license: MIT
+homepage: https://prohelika.org
+repository: https://github.com/ProhelikaX/markdownx
+issue_tracker: https://github.com/ProhelikaX/markdownx/issues
+documentation: https://github.com/ProhelikaX/markdownx#readme
+
+environment:
+  sdk: ^3.0.0
+
+dependencies:
+  markdown: ^7.2.0
+
+dev_dependencies:
+  test: ^1.24.0
+  lints: ^6.0.0
+
+topics:
+  - markdown
+  - parser
+  - latex
+  - math
+  - extension
