@@ -4,16 +4,17 @@ void main() {
   print('=== markdownx Examples ===\n');
 
   final markdown = '''
-# Physics Equations
+# Interactive Educational Content
 
-## Newton's Second Law
+## Physics Equations
 ![\$F = ma\$](eq:F=m*a)
-
-## Energy-Mass Equivalence
 ![\$E = mc^2\$](grapheq:E=m*c^2)
 
-## Interactive Demo
+## Interactive Elements
 [[Simulation:pendulum]]
+[[Quiz:physics_101]]
+![Demo Video](video:intro.mp4)
+![3D Model](model:molecule.glb)
 
 ## Math Examples
 Inline LaTeX: \$\\alpha + \\beta = \\gamma\$
@@ -29,7 +30,6 @@ Block LaTeX:
   // Parse the markdown
   final result = MarkdownxParser.parse(markdown);
 
-  // Show results
   print('Source length: ${result.source.length} chars');
   print('Total elements: ${result.elements.length}');
   print('');
@@ -44,26 +44,32 @@ Block LaTeX:
   }
   print('');
 
-  // Simulations
-  print('🎮 Simulations (${result.simulations.length}):');
-  for (final sim in result.simulations) {
-    print('  - ${sim.content}');
+  // Custom protocols (generic)
+  print('🔌 Custom Protocols (${result.custom.length}):');
+  for (final item in result.custom) {
+    print('  - [${item.protocol}] ${item.content}');
+    if (item.display != null) {
+      print('    alt: ${item.display}');
+    }
   }
   print('');
 
-  // LaTeX
-  print('📝 LaTeX (${result.latex.length}):');
-  for (final tex in result.latex) {
-    final type =
-        tex.type == MarkdownxElementType.latexBlock ? 'block' : 'inline';
-    print(
-        '  - ${tex.content.substring(0, tex.content.length.clamp(0, 30))}... ($type)');
-  }
+  // By specific protocol
+  print('🎮 Simulations: ${result.byProtocol("simulation").length}');
+  print('🎬 Videos: ${result.byProtocol("video").length}');
+  print('❓ Quizzes: ${result.byProtocol("quiz").length}');
+  print('🎨 3D Models: ${result.byProtocol("model").length}');
+  print('');
+
+  // All unique protocols
+  print('📦 All protocols used: ${result.protocols}');
   print('');
 
   // Quick checks
   print('✅ Has equations: ${MarkdownxParser.hasEquations(markdown)}');
-  print('✅ Has simulations: ${MarkdownxParser.hasSimulations(markdown)}');
+  print('✅ Has custom: ${MarkdownxParser.hasCustom(markdown)}');
+  print(
+      '✅ Has simulation: ${MarkdownxParser.hasProtocol(markdown, "simulation")}');
+  print('✅ Has video: ${MarkdownxParser.hasProtocol(markdown, "video")}');
   print('✅ Has LaTeX: ${MarkdownxParser.hasLatex(markdown)}');
-  print('✅ Has custom syntax: ${MarkdownxParser.hasCustomSyntax(markdown)}');
 }

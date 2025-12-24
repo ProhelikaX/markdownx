@@ -1,11 +1,7 @@
 import 'package:markdown/markdown.dart';
 
 /// Custom inline syntax for LaTeX expressions using `$...$`.
-///
-/// This syntax recognizes inline LaTeX like `$E = mc^2$` and converts
-/// it to a custom element that can be handled by a custom renderer.
 class LatexInlineSyntax extends InlineSyntax {
-  /// Creates a LaTeX inline syntax parser.
   LatexInlineSyntax() : super(r'\$([^\$\n]+)\$');
 
   @override
@@ -20,7 +16,6 @@ class LatexInlineSyntax extends InlineSyntax {
 
 /// Custom inline syntax for LaTeX blocks using `$$...$$`.
 class LatexBlockSyntax extends InlineSyntax {
-  /// Creates a LaTeX block syntax parser.
   LatexBlockSyntax() : super(r'\$\$([^\$]+)\$\$');
 
   @override
@@ -35,7 +30,6 @@ class LatexBlockSyntax extends InlineSyntax {
 
 /// Custom inline syntax for equations: `![$LaTeX$](eq:equation)`.
 class EquationSyntax extends InlineSyntax {
-  /// Creates an equation syntax parser.
   EquationSyntax() : super(r'!\[([^\]]*)\]\((eq|grapheq):([^)]+)\)');
 
   @override
@@ -52,36 +46,69 @@ class EquationSyntax extends InlineSyntax {
   }
 }
 
-/// Custom inline syntax for simulations: `![$alt](simulation:name)`.
-class SimulationImageSyntax extends InlineSyntax {
-  /// Creates a simulation image syntax parser.
-  SimulationImageSyntax() : super(r'!\[([^\]]*)\]\(simulation:([^)]+)\)');
+/// Custom inline syntax for generic custom protocols: `![$alt](protocol:value)`.
+///
+/// This captures any protocol that's not a reserved one (eq, grapheq).
+class CustomProtocolSyntax extends InlineSyntax {
+  /// Reserved protocols that have their own handlers.
+  static const _reservedProtocols = {'eq', 'grapheq'};
+
+  CustomProtocolSyntax()
+      : super(r'!\[([^\]]*)\]\(([a-zA-Z][a-zA-Z0-9_]*):([^)]+)\)');
 
   @override
   bool onMatch(InlineParser parser, Match match) {
     final alt = match.group(1) ?? '';
-    final name = match.group(2) ?? '';
+    final protocol = match.group(2)!.toLowerCase();
+    final value = Uri.decodeComponent(match.group(3) ?? '');
 
-    final element = Element.text('simulation', name);
-    element.attributes['alt'] = alt;
+    // Skip reserved protocols
+    if (_reservedProtocols.contains(protocol)) {
+      return false;
+    }
+
+    final element = Element.text('custom', value);
+    element.attributes['protocol'] = protocol;
+    if (alt.isNotEmpty) {
+      element.attributes['alt'] = alt;
+    }
     parser.addNode(element);
     return true;
   }
 }
 
-/// Custom block syntax for simulation tags: `[[Simulation:name]]`.
-class SimulationTagSyntax extends InlineSyntax {
-  /// Creates a simulation tag syntax parser.
-  SimulationTagSyntax() : super(r'\[\[Simulation:([a-zA-Z0-9_\-]+)\]\]');
+/// Custom inline syntax for bracket tags: `[[Protocol:value]]`.
+class BracketTagSyntax extends InlineSyntax {
+  BracketTagSyntax() : super(r'\[\[([a-zA-Z][a-zA-Z0-9_]*):([^\]]+)\]\]');
 
   @override
   bool onMatch(InlineParser parser, Match match) {
-    final name = match.group(1) ?? '';
-    final element = Element.text('simulation', name);
+    final protocol = match.group(1)!.toLowerCase();
+    final value = match.group(2) ?? '';
+
+    final element = Element.text('custom', value);
+    element.attributes['protocol'] = protocol;
     parser.addNode(element);
     return true;
   }
 }
+
+/// All markdownx inline syntaxes for use with the markdown package.
+///
+/// Use with:
+/// ```dart
+/// final html = markdownToHtml(
+///   markdown,
+///   inlineSyntaxes: markdownxInlineSyntaxes,
+/// );
+/// ```
+List<InlineSyntax> get markdownxInlineSyntaxes => [
+      LatexBlockSyntax(),
+      LatexInlineSyntax(),
+      EquationSyntax(),
+      CustomProtocolSyntax(),
+      BracketTagSyntax(),
+    ];
 
 /// Extension to create markdown documents with markdownx syntax support.
 extension MarkdownxExtension on Document {
@@ -97,22 +124,7 @@ extension MarkdownxExtension on Document {
       linkResolver: linkResolver,
       imageLinkResolver: imageLinkResolver,
       encodeHtml: encodeHtml,
-      inlineSyntaxes: [
-        LatexBlockSyntax(),
-        LatexInlineSyntax(),
-        EquationSyntax(),
-        SimulationImageSyntax(),
-        SimulationTagSyntax(),
-      ],
+      inlineSyntaxes: markdownxInlineSyntaxes,
     );
   }
 }
-
-/// All markdownx inline syntaxes for use with the markdown package.
-List<InlineSyntax> get markdownxInlineSyntaxes => [
-      LatexBlockSyntax(),
-      LatexInlineSyntax(),
-      EquationSyntax(),
-      SimulationImageSyntax(),
-      SimulationTagSyntax(),
-    ];

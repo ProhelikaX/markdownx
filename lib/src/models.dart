@@ -6,10 +6,10 @@ enum MarkdownxElementType {
   /// Graphable equation: `![$LaTeX$](grapheq:equation)`
   graphEquation,
 
-  /// Simulation embed: `![$alt](simulation:name)` or `[[Simulation:name]]`
-  simulation,
+  /// Custom protocol: `![$alt](protocol:value)` or `[[Protocol:value]]`
+  custom,
 
-  /// Inline LaTeX: `$...$` or `$$...$$`
+  /// Inline LaTeX: `$...$`
   latex,
 
   /// Block LaTeX: `$$...$$`
@@ -26,13 +26,16 @@ class MarkdownxElement {
 
   /// The raw content/value of the element.
   /// - For equations: the parseable equation string
-  /// - For simulations: the simulation name
+  /// - For custom: the value after the protocol
   /// - For latex: the LaTeX content
   /// - For text: the text content
   final String content;
 
   /// Optional display value (for equations, this is the LaTeX display).
   final String? display;
+
+  /// The protocol/tag name for custom elements (e.g., "simulation", "video", "quiz").
+  final String? protocol;
 
   /// Start position in the original markdown.
   final int start;
@@ -47,6 +50,7 @@ class MarkdownxElement {
     required this.type,
     required this.content,
     this.display,
+    this.protocol,
     required this.start,
     required this.end,
     this.metadata,
@@ -54,7 +58,10 @@ class MarkdownxElement {
 
   @override
   String toString() {
-    return 'MarkdownxElement(type: $type, content: $content, display: $display)';
+    if (protocol != null) {
+      return 'MarkdownxElement(type: $type, protocol: $protocol, content: $content)';
+    }
+    return 'MarkdownxElement(type: $type, content: $content)';
   }
 
   /// Creates an equation element.
@@ -76,15 +83,19 @@ class MarkdownxElement {
     );
   }
 
-  /// Creates a simulation element.
-  factory MarkdownxElement.simulation({
-    required String name,
+  /// Creates a custom protocol element.
+  factory MarkdownxElement.custom({
+    required String protocol,
+    required String value,
+    String? alt,
     required int start,
     required int end,
   }) {
     return MarkdownxElement(
-      type: MarkdownxElementType.simulation,
-      content: name,
+      type: MarkdownxElementType.custom,
+      content: value,
+      protocol: protocol.toLowerCase(),
+      display: alt,
       start: start,
       end: end,
     );
@@ -120,6 +131,12 @@ class MarkdownxElement {
       end: end,
     );
   }
+
+  /// Whether this is a custom element with the given protocol.
+  bool isProtocol(String name) {
+    return type == MarkdownxElementType.custom &&
+        protocol?.toLowerCase() == name.toLowerCase();
+  }
 }
 
 /// Result of parsing markdownx content.
@@ -144,6 +161,11 @@ class MarkdownxParseResult {
     return elements.where((e) => e.type == type).toList();
   }
 
+  /// Gets all custom elements with a specific protocol.
+  List<MarkdownxElement> byProtocol(String protocol) {
+    return elements.where((e) => e.isProtocol(protocol)).toList();
+  }
+
   /// Gets all equations (both solvable and graphable).
   List<MarkdownxElement> get equations {
     return elements
@@ -153,9 +175,9 @@ class MarkdownxParseResult {
         .toList();
   }
 
-  /// Gets all simulations.
-  List<MarkdownxElement> get simulations {
-    return byType(MarkdownxElementType.simulation);
+  /// Gets all custom protocol elements.
+  List<MarkdownxElement> get custom {
+    return byType(MarkdownxElementType.custom);
   }
 
   /// Gets all LaTeX elements (inline and block).
@@ -170,5 +192,13 @@ class MarkdownxParseResult {
   /// Whether the content has any custom markdownx elements.
   bool get hasCustomElements {
     return elements.any((e) => e.type != MarkdownxElementType.text);
+  }
+
+  /// Gets all unique protocol names used in custom elements.
+  Set<String> get protocols {
+    return custom
+        .where((e) => e.protocol != null)
+        .map((e) => e.protocol!)
+        .toSet();
   }
 }
