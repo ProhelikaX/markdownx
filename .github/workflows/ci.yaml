@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  analyze_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Get dependencies
+        run: dart pub get
+
+      - name: Format check
+        run: dart format --set-exit-if-changed .
+
+      - name: Analyze
+        run: dart analyze
+
+      - name: Run example (sanity)
+        run: dart run example/markdownx_example.dart
+
+      - name: Run tests
+        run: dart test --reporter=expanded
+
+      - name: Check outdated deps
+        run: dart pub outdated || true
+
+      - name: Generate docs
+        run: dart doc --no-link-to-remote

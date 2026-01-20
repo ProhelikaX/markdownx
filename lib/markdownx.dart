@@ -26,7 +26,7 @@
 ///   print('LaTeX: ${result.latex.length}');
 /// }
 /// ```
-library markdownx;
+library;
 
 export 'src/models.dart';
 export 'src/parser.dart';

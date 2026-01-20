@@ -8,7 +8,7 @@ void main() {
 
 ## Physics Equations
 ![\$F = ma\$](eq:F=m*a)
-![\$E = mc^2\$](grapheq:E=m*c^2)
+![\$E = mc^2\$](grapheq:E=m*SOL^2)
 
 ## Interactive Elements
 [[Simulation:pendulum]]

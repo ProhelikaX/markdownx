@@ -231,19 +231,19 @@
     },
     {
       "name": "test",
-      "rootUri": "file:///Users/smjxpro/.pub-cache/hosted/pub.dev/test-1.28.0",
+      "rootUri": "file:///Users/smjxpro/.pub-cache/hosted/pub.dev/test-1.29.0",
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
     {
       "name": "test_api",
-      "rootUri": "file:///Users/smjxpro/.pub-cache/hosted/pub.dev/test_api-0.7.8",
+      "rootUri": "file:///Users/smjxpro/.pub-cache/hosted/pub.dev/test_api-0.7.9",
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
     {
       "name": "test_core",
-      "rootUri": "file:///Users/smjxpro/.pub-cache/hosted/pub.dev/test_core-0.6.14",
+      "rootUri": "file:///Users/smjxpro/.pub-cache/hosted/pub.dev/test_core-0.6.15",
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },

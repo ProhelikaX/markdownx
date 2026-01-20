@@ -1,0 +1,11 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  exclude:
+    - example/**
+
+# Add or customize lints as needed
+linter:
+  rules:
+    - prefer_const_constructors
+    - prefer_final_locals
