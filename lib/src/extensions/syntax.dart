@@ -2,6 +2,7 @@ import 'package:markdown/markdown.dart';
 
 /// Custom inline syntax for LaTeX expressions using `$...$`.
 class LatexInlineSyntax extends InlineSyntax {
+  /// Creates an inline LaTeX syntax parser that matches `$...$`.
   LatexInlineSyntax() : super(r'\$([^\$\n]+)\$');
 
   @override
@@ -16,6 +17,7 @@ class LatexInlineSyntax extends InlineSyntax {
 
 /// Custom inline syntax for LaTeX blocks using `$$...$$`.
 class LatexBlockSyntax extends InlineSyntax {
+  /// Creates a block LaTeX syntax parser that matches `$$...$$`.
   LatexBlockSyntax() : super(r'\$\$([^\$]+)\$\$');
 
   @override
@@ -30,7 +32,8 @@ class LatexBlockSyntax extends InlineSyntax {
 
 /// Custom inline syntax for equations: `![$LaTeX$](eq:equation)`.
 class EquationSyntax extends InlineSyntax {
-  EquationSyntax() : super(r'!\[([^\]]*)\]\((eq|grapheq):([^)]+)\)');
+  /// Creates an equation syntax parser that matches `![$...$](eq:...)` and `grapheq`.
+  EquationSyntax() : super(r'!\[([^\]]*)\]\((eq|grapheq):([^\)]+)\)');
 
   @override
   bool onMatch(InlineParser parser, Match match) {
@@ -53,6 +56,7 @@ class CustomProtocolSyntax extends InlineSyntax {
   /// Reserved protocols that have their own handlers.
   static const _reservedProtocols = {'eq', 'grapheq'};
 
+  /// Creates a syntax parser for generic custom protocols like `![alt](protocol:value)`.
   CustomProtocolSyntax()
       : super(r'!\[([^\]]*)\]\(([a-zA-Z][a-zA-Z0-9_]*):([^)]+)\)');
 
@@ -79,6 +83,7 @@ class CustomProtocolSyntax extends InlineSyntax {
 
 /// Custom inline syntax for bracket tags: `[[Protocol:value]]`.
 class BracketTagSyntax extends InlineSyntax {
+  /// Creates a syntax parser that matches bracket tags `[[Protocol:value]]`.
   BracketTagSyntax() : super(r'\[\[([a-zA-Z][a-zA-Z0-9_]*):([^\]]+)\]\]');
 
   @override

@@ -46,6 +46,10 @@ class MarkdownxElement {
   /// Additional metadata.
   final Map<String, dynamic>? metadata;
 
+  /// Creates a new [MarkdownxElement].
+  ///
+  /// Provide the [type] and [content]; other fields are optional metadata
+  /// that describe the element's location and presentation.
   const MarkdownxElement({
     required this.type,
     required this.content,
@@ -150,6 +154,8 @@ class MarkdownxParseResult {
   /// Markdown content with custom syntax stripped (for standard rendering).
   final String strippedMarkdown;
 
+  /// Creates a [MarkdownxParseResult] for the given [source], [elements],
+  /// and a [strippedMarkdown] representation for standard rendering.
   const MarkdownxParseResult({
     required this.source,
     required this.elements,

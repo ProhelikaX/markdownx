@@ -17,7 +17,7 @@ Extended markdown parser with custom syntax for equations, dynamic protocols, an
 
 ```yaml
 dependencies:
-  markdownx: ^1.0.0
+  markdownx: ^1.0.1
 ```
 
 ## Quick Start

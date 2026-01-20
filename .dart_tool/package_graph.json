@@ -5,7 +5,7 @@
   "packages": [
     {
       "name": "markdownx",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "dependencies": [
         "markdown"
       ],
@@ -290,7 +290,7 @@
     },
     {
       "name": "analyzer",
-      "version": "9.0.0",
+      "version": "10.0.1",
       "dependencies": [
         "_fe_analyzer_shared",
         "collection",
@@ -308,7 +308,7 @@
     },
     {
       "name": "meta",
-      "version": "1.17.0",
+      "version": "1.18.0",
       "dependencies": []
     },
     {
@@ -424,7 +424,7 @@
     },
     {
       "name": "watcher",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "dependencies": [
         "async",
         "path"
@@ -439,9 +439,10 @@
     },
     {
       "name": "_fe_analyzer_shared",
-      "version": "92.0.0",
+      "version": "93.0.0",
       "dependencies": [
-        "meta"
+        "meta",
+        "source_span"
       ]
     },
     {
